@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ company.name }} — {{ site_name }}{% endblock %}
+
+{% block content %}
+<header class="border-b border-line/60">
+  <div class="max-w-container mx-auto px-6 lg:px-10 pt-12 pb-16">
+    <nav class="flex items-center gap-2 text-[12.5px] mono text-ink3 mb-10">
+      <a href="{{ url_for('companies') }}" class="hover:text-ink">COMPANIES</a>
+      <span>/</span>
+      <span class="text-ink">{{ company.name|upper }}</span>
+    </nav>
+    <div class="editorial-eyebrow mb-4">
+      {% if company.hq %}{{ company.hq }}{% endif %}{% if company.founded %} · Founded {{ company.founded }}{% endif %} · {{ tools|length }} product{{ '' if tools|length == 1 else 's' }}
+    </div>
+    <h1 class="serif text-5xl md:text-7xl font-medium tracking-[-0.03em] leading-none mb-8">{{ company.name }}</h1>
+    <p class="serif-text text-[20px] md:text-[22px] text-ink2 max-w-3xl leading-[1.5]">{{ company.description }}</p>
+    {% if company.website %}
+      <a href="{{ company.website }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-8 text-[14px] font-medium text-ink link-underline">
+        {{ company.website.replace('https://','').replace('http://','').rstrip('/') }}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+      </a>
+    {% endif %}
+  </div>
+</header>
+
+<section>
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-16">
+    <div class="editorial-eyebrow mb-2">Products</div>
+    <h2 class="serif text-3xl md:text-4xl font-medium tracking-tight mb-10">{{ tools|length }} tool{{ '' if tools|length == 1 else 's' }} from {{ company.name }}.</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for tool in tools %}
+        <a href="{{ url_for('tool_detail', slug=tool.slug) }}" class="card-accent p-6">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <h3 class="serif text-[22px] font-semibold tracking-tight leading-tight">{{ tool.name }}</h3>
+            <span class="text-[11px] mono uppercase tracking-wider text-ink3 whitespace-nowrap pt-1">
+              <span class="dot dot-{{ tool.pricing_model|lower }}"></span>{{ tool.pricing_model }}
+            </span>
+          </div>
+          <p class="text-[14px] text-ink2 leading-[1.55] line-clamp-3 mb-4">{{ tool.tagline }}</p>
+          <div class="flex flex-wrap gap-1.5">
+            {% for c in tool.categories[:2] %}
+              <span class="text-[11px] mono text-ink3">{{ c.name|upper }}</span>{% if not loop.last %}<span class="text-line">·</span>{% endif %}
+            {% endfor %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}About — {{ site_name }}{% endblock %}
+
+{% block content %}
+<article class="max-w-reading mx-auto px-6 lg:px-10 pt-16 pb-24">
+  <div class="editorial-eyebrow mb-6">Colophon</div>
+  <h1 class="serif text-5xl md:text-6xl font-medium tracking-[-0.03em] mb-10 leading-[1.02]">A different kind of directory.</h1>
+
+  <div class="serif-text text-[19px] leading-[1.65] text-ink2 space-y-7">
+    <p class="text-[22px] text-ink leading-[1.45]">{{ site_name }} is a curated reference to the AI tools that matter — written for people who don't have time to scroll through five thousand entries.</p>
+
+    <p>Every other AI directory tries to list every tool that exists. That's noise. We list the ones a serious operator should know about — and tell you what they actually do, what they cost, and where they fall short.</p>
+
+    <h2 class="serif text-3xl font-medium tracking-tight text-ink mt-12 mb-3">Curated, not crowdsourced.</h2>
+    <p>No paid placement. No affiliate priority. No spammy "submit your tool" form filling the catalog with no-name SaaS. Tools earn their entry by shipping real value.</p>
+
+    <h2 class="serif text-3xl font-medium tracking-tight text-ink mt-12 mb-3">Written for executives.</h2>
+    <p>Each entry tells you what the tool does in one sentence, what it costs, where it shines, and where it doesn't. No marketing copy. No hedging. The honest brief you'd get from a friend who's already used it.</p>
+
+    <h2 class="serif text-3xl font-medium tracking-tight text-ink mt-12 mb-3">Suggest a tool.</h2>
+    <p>If a tool deserves a spot, send a note to <a href="mailto:hello@aiatlas.io" class="text-ink link-underline">hello@aiatlas.io</a> with the name and one sentence on why.</p>
+  </div>
+</article>
+{% endblock %}

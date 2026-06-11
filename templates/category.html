@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }} — {{ site_name }}{% endblock %}
+
+{% block content %}
+<header class="border-b border-line/60">
+  <div class="max-w-container mx-auto px-6 lg:px-10 pt-12 pb-14">
+    <nav class="flex items-center gap-2 text-[12.5px] mono text-ink3 mb-10">
+      <a href="{{ url_for('categories') }}" class="hover:text-ink">CATEGORIES</a>
+      <span>/</span>
+      <span class="text-ink">{{ category.name|upper }}</span>
+    </nav>
+    <div class="flex items-start gap-6 mb-6">
+      <span class="text-5xl mt-2">{{ category.icon or '◆' }}</span>
+      <div>
+        <div class="editorial-eyebrow mb-3">{{ tools|length }} tool{{ '' if tools|length == 1 else 's' }} in this category</div>
+        <h1 class="serif text-5xl md:text-6xl font-medium tracking-[-0.03em] leading-none mb-5">{{ category.name }}</h1>
+        <p class="serif-text text-[19px] text-ink2 max-w-2xl leading-[1.55]">{{ category.description }}</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-14">
+    {% if tools %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for tool in tools %}
+          <a href="{{ url_for('tool_detail', slug=tool.slug) }}" class="card-accent p-6">
+            <div class="flex items-start justify-between gap-3 mb-4">
+              <div class="min-w-0 flex-1">
+                <div class="text-[11.5px] mono text-ink3 mb-1">{{ tool.company.name }}</div>
+                <h3 class="serif text-[22px] font-semibold tracking-tight leading-tight">{{ tool.name }}</h3>
+              </div>
+              <span class="text-[11px] mono uppercase tracking-wider text-ink3 whitespace-nowrap pt-1">
+                <span class="dot dot-{{ tool.pricing_model|lower }}"></span>{{ tool.pricing_model }}
+              </span>
+            </div>
+            <p class="text-[14px] text-ink2 leading-[1.55] line-clamp-3">{{ tool.tagline }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="serif-text text-[19px] text-ink2">No tools in this category yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

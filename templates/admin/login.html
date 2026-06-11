@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Admin login — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="max-w-md mx-auto px-4 sm:px-6 py-20">
+  <h1 class="serif text-3xl font-bold tracking-tight mb-6">Admin login</h1>
+  <form method="post" class="space-y-4 bg-white p-6 rounded-xl border border-slate-200">
+    <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-2.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-900" />
+    <button class="w-full px-4 py-2.5 bg-slate-900 text-white font-medium rounded-md hover:bg-slate-800">Log in</button>
+  </form>
+</section>
+{% endblock %}

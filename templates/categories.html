@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Categories — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="border-b border-line/60">
+  <div class="max-w-container mx-auto px-6 lg:px-10 pt-16 pb-12">
+    <div class="editorial-eyebrow mb-4">Index · {{ categories|length }} categories</div>
+    <h1 class="serif text-5xl md:text-6xl font-medium tracking-[-0.03em] mb-6">Browse by category.</h1>
+    <p class="serif-text text-[19px] text-ink2 max-w-2xl leading-[1.55]">Pick a problem, see the tools that solve it. Each category is curated, not crowdsourced.</p>
+  </div>
+</section>
+
+<section>
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for cat in categories %}
+        <a href="{{ url_for('category_detail', slug=cat.slug) }}" class="card p-7 group">
+          <div class="flex items-start justify-between mb-5">
+            <span class="text-3xl">{{ cat.icon or '◆' }}</span>
+            <span class="text-[11px] mono text-ink3 pt-2">{{ '%02d'|format(cat.tool_count) }} TOOLS</span>
+          </div>
+          <h2 class="serif text-[22px] font-semibold tracking-tight mb-2 group-hover:text-accent transition-colors">{{ cat.name }}</h2>
+          <p class="text-[14px] text-ink2 leading-[1.55]">{{ cat.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

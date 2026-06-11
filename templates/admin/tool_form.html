@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}{% if tool %}Edit {{ tool.name }}{% else %}New tool{% endif %} — Admin{% endblock %}
+
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+  <a href="{{ url_for('admin_dashboard') }}" class="text-sm text-slate-500 hover:underline">← Back</a>
+  <h1 class="serif text-3xl font-bold tracking-tight mt-3 mb-6">{% if tool %}Edit {{ tool.name }}{% else %}Add a new tool{% endif %}</h1>
+
+  <form method="post" class="bg-white p-6 rounded-xl border border-slate-200 space-y-5">
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Name</label>
+      <input name="name" value="{{ tool.name if tool else '' }}" required class="w-full px-3 py-2 border border-slate-300 rounded-md" />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Slug (URL)</label>
+      <input name="slug" value="{{ tool.slug if tool else '' }}" placeholder="auto-generated from name if empty" class="w-full px-3 py-2 border border-slate-300 rounded-md" />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Company</label>
+      <select name="company_id" required class="w-full px-3 py-2 border border-slate-300 rounded-md">
+        <option value="">—</option>
+        {% for c in companies %}
+          <option value="{{ c.id }}" {% if tool and tool.company_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Tagline (one-sentence executive description)</label>
+      <input name="tagline" value="{{ tool.tagline if tool else '' }}" class="w-full px-3 py-2 border border-slate-300 rounded-md" />
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Description (longer)</label>
+      <textarea name="description" rows="5" class="w-full px-3 py-2 border border-slate-300 rounded-md">{{ tool.description if tool else '' }}</textarea>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Pricing model</label>
+        <select name="pricing_model" class="w-full px-3 py-2 border border-slate-300 rounded-md">
+          {% for p in pricing_models %}
+            <option value="{{ p }}" {% if tool and tool.pricing_model == p %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Pricing details</label>
+        <input name="pricing_details" value="{{ tool.pricing_details if tool else '' }}" placeholder="e.g. $20/mo Pro, API pay-per-token" class="w-full px-3 py-2 border border-slate-300 rounded-md" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Strengths (separate with |)</label>
+      <textarea name="strengths" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-md">{{ tool.strengths if tool else '' }}</textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Weaknesses (separate with |)</label>
+      <textarea name="weaknesses" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-md">{{ tool.weaknesses if tool else '' }}</textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Best for (separate with |)</label>
+      <textarea name="best_for" rows="2" class="w-full px-3 py-2 border border-slate-300 rounded-md">{{ tool.best_for if tool else '' }}</textarea>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Website</label>
+        <input name="website" value="{{ tool.website if tool else '' }}" class="w-full px-3 py-2 border border-slate-300 rounded-md" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Launched</label>
+        <input name="launched" value="{{ tool.launched if tool else '' }}" placeholder="e.g. 2023" class="w-full px-3 py-2 border border-slate-300 rounded-md" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1">Categories (cmd-click to multi-select)</label>
+      <select name="categories" multiple size="8" class="w-full px-3 py-2 border border-slate-300 rounded-md">
+        {% for c in categories %}
+          <option value="{{ c.id }}" {% if tool and c in tool.categories %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" name="featured" {% if tool and tool.featured %}checked{% endif %} />
+      Feature on home page
+    </label>
+    <button class="w-full px-4 py-3 bg-slate-900 text-white font-medium rounded-md hover:bg-slate-800">Save</button>
+  </form>
+</section>
+{% endblock %}

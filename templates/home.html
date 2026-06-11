@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- ============== HERO (DARK) ============== -->
+<section class="bg-ink text-cream relative overflow-hidden grain-dark">
+  <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full" style="background: radial-gradient(circle, rgba(212,69,32,0.18) 0%, rgba(212,69,32,0) 70%);"></div>
+  <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(197,138,46,0.15) 0%, rgba(197,138,46,0) 70%);"></div>
+
+  <div class="max-w-container mx-auto px-6 lg:px-10 pt-24 lg:pt-36 pb-24 lg:pb-32 relative z-10">
+    <div class="max-w-5xl">
+      <div class="flex flex-wrap items-center gap-3 mb-12">
+        <span class="pill-stamp">
+          <span class="pulse-dot"></span>
+          Issue №01 · Updated weekly
+        </span>
+        <span class="pill-stamp">{{ total_tools }} tools · {{ total_companies }} companies</span>
+      </div>
+      <h1 class="hero-headline text-cream mb-10">
+        The editorial<br>
+        atlas of the<br>
+        <em class="italic text-accent" style="font-variation-settings: 'opsz' 144;">AI landscape</em>.
+      </h1>
+      <p class="serif-text text-[20px] md:text-[24px] leading-[1.45] text-paper2 max-w-3xl mb-14">
+        A curated reference to the tools that matter — what they do, what they cost, where they shine, where they don't. No fluff. No infinite scroll. No paid placement. Just the signal.
+      </p>
+      <form action="{{ url_for('search') }}" method="get" class="max-w-2xl mb-8">
+        <div class="relative">
+          <svg class="absolute left-7 top-1/2 -translate-y-1/2 text-ink3" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" name="q" placeholder="Try 'video generation', 'meeting notes', 'Claude'…" class="search-input pl-16 pr-36" />
+          <button class="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-3 bg-ink text-cream text-[14px] font-medium rounded-lg hover:bg-accent transition-colors">Search →</button>
+        </div>
+      </form>
+      <div class="flex flex-wrap gap-2">
+        {% for cat in categories[:7] %}
+          <a href="{{ url_for('category_detail', slug=cat.slug) }}" class="chip-dark">
+            <span class="mr-1.5">{{ cat.icon }}</span>{{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FEATURED ============== -->
+{% if featured %}
+<section class="border-b border-line/70">
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-24 lg:py-32">
+    <div class="flex items-end justify-between mb-14 gap-6">
+      <div>
+        <div class="eyebrow-accent mb-3">Editor's selection</div>
+        <h2 class="serif text-5xl md:text-6xl font-medium tracking-[-0.025em] leading-[1] max-w-2xl">Worth knowing<br>right now.</h2>
+      </div>
+      <a href="{{ url_for('search') }}" class="hidden md:inline-flex items-center gap-2 text-[14px] font-medium text-ink hover:text-accent transition-colors group">
+        See the full catalog
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for tool in featured %}
+        <a href="{{ url_for('tool_detail', slug=tool.slug) }}" class="card-accent p-7 group">
+          <div class="flex items-start justify-between gap-3 mb-5">
+            <div class="min-w-0 flex-1">
+              <div class="text-[11.5px] text-ink3 mono mb-1.5">{{ tool.company.name|upper }}</div>
+              <h3 class="serif text-[26px] font-semibold tracking-tight leading-tight">{{ tool.name }}</h3>
+            </div>
+            <span class="text-[11px] mono uppercase tracking-wider text-ink3 whitespace-nowrap pt-1.5">
+              <span class="dot dot-{{ tool.pricing_model|lower }}"></span>{{ tool.pricing_model }}
+            </span>
+          </div>
+          <p class="serif-text text-[15.5px] leading-[1.55] text-ink2 line-clamp-3 mb-6">{{ tool.tagline }}</p>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-line/60">
+            {% for c in tool.categories[:2] %}
+              <span class="text-[10.5px] mono text-ink3 tracking-wider">{{ c.name|upper }}</span>{% if not loop.last %}<span class="text-line">·</span>{% endif %}
+            {% endfor %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============== CATEGORY BROWSER ============== -->
+<section class="border-b border-line/70 bg-paper2/40">
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-24 lg:py-32">
+    <div class="flex items-end justify-between mb-14 gap-6">
+      <div>
+        <div class="eyebrow mb-3">By category</div>
+        <h2 class="serif text-5xl md:text-6xl font-medium tracking-[-0.025em] leading-[1]">What problem<br>are you <em class="italic text-accent">solving?</em></h2>
+      </div>
+      <a href="{{ url_for('categories') }}" class="hidden md:inline-flex items-center gap-2 text-[14px] font-medium text-ink hover:text-accent group">
+        All {{ categories|length }} categories
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      {% for cat in categories %}
+        <a href="{{ url_for('category_detail', slug=cat.slug) }}" class="card p-5 group">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-2xl">{{ cat.icon or '◆' }}</span>
+            <span class="text-[11px] mono text-ink3 pt-1.5">{{ '%02d'|format(cat.tool_count) }}</span>
+          </div>
+          <div class="serif text-[18px] font-semibold tracking-tight leading-tight mb-1 group-hover:text-accent transition-colors">{{ cat.name }}</div>
+          <div class="text-[12.5px] text-ink3 line-clamp-2 leading-[1.45]">{{ cat.description }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============== STATS / MASTHEAD ============== -->
+<section>
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-24 lg:py-32">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-20">
+      <div class="border-l-[3px] border-accent pl-7">
+        <div class="serif text-7xl md:text-8xl font-medium tracking-[-0.03em] leading-none">{{ total_tools }}</div>
+        <div class="eyebrow mt-4">Tools catalogued</div>
+      </div>
+      <div class="border-l-[3px] border-ink pl-7">
+        <div class="serif text-7xl md:text-8xl font-medium tracking-[-0.03em] leading-none">{{ total_companies }}</div>
+        <div class="eyebrow mt-4">Companies tracked</div>
+      </div>
+      <div class="border-l-[3px] border-sage pl-7">
+        <div class="serif text-7xl md:text-8xl font-medium tracking-[-0.03em] leading-none">{{ categories|length }}</div>
+        <div class="eyebrow mt-4">Use-case categories</div>
+      </div>
+    </div>
+    <div class="pt-12 border-t border-line/70 max-w-3xl">
+      <div class="eyebrow-accent mb-4">A different kind of directory</div>
+      <p class="serif-text text-[22px] md:text-[26px] leading-[1.5] text-ink2">
+        Most AI directories list everything. <span class="text-ink">{{ site_name }} lists the ones an operator should actually know about</span> — and tells you the truth about each. <a href="{{ url_for('about') }}" class="text-accent link-underline">How we curate →</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

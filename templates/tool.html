@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}{{ tool.name }} — {{ tool.company.name }} — {{ site_name }}{% endblock %}
+{% block description %}{{ tool.tagline }}{% endblock %}
+
+{% block content %}
+<article>
+  <header class="border-b border-line/60">
+    <div class="max-w-container mx-auto px-6 lg:px-10 pt-12 pb-16 lg:pb-20">
+      <nav class="flex items-center gap-2 text-[12.5px] mono text-ink3 mb-12">
+        <a href="{{ url_for('home') }}" class="hover:text-ink">{{ site_name|upper }}</a>
+        <span>/</span>
+        <a href="{{ url_for('company_detail', slug=tool.company.slug) }}" class="hover:text-ink">{{ tool.company.name|upper }}</a>
+        <span>/</span>
+        <span class="text-ink">{{ tool.name|upper }}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div class="lg:col-span-8">
+          <div class="editorial-eyebrow mb-6">
+            <span class="dot dot-{{ tool.pricing_model|lower }}"></span>{{ tool.pricing_model }}{% if tool.pricing_details %} · {{ tool.pricing_details }}{% endif %}
+          </div>
+          <div class="text-[15px] text-ink2 mb-4">
+            <a href="{{ url_for('company_detail', slug=tool.company.slug) }}" class="link-underline">by <em class="serif font-medium text-ink not-italic">{{ tool.company.name }}</em></a>
+          </div>
+          <h1 class="serif font-medium tracking-[-0.03em] text-[56px] md:text-[88px] leading-[0.98] mb-8" style="font-variation-settings: 'opsz' 144;">{{ tool.name }}</h1>
+          <p class="serif-text text-[22px] md:text-[26px] leading-[1.4] text-ink2 max-w-3xl">{{ tool.tagline }}</p>
+        </div>
+        <aside class="lg:col-span-4 lg:pt-4">
+          <div class="card p-6">
+            <div class="editorial-eyebrow mb-4">At a glance</div>
+            <dl class="space-y-4 text-[14px]">
+              <div>
+                <dt class="text-ink3 text-[12px] mono uppercase tracking-wider mb-1">Pricing</dt>
+                <dd class="text-ink font-medium">
+                  <span class="dot dot-{{ tool.pricing_model|lower }}"></span>{{ tool.pricing_model }}
+                </dd>
+                {% if tool.pricing_details %}<dd class="text-ink2 text-[13px] mt-1">{{ tool.pricing_details }}</dd>{% endif %}
+              </div>
+              {% if tool.launched %}
+              <div>
+                <dt class="text-ink3 text-[12px] mono uppercase tracking-wider mb-1">Launched</dt>
+                <dd class="text-ink font-medium">{{ tool.launched }}</dd>
+              </div>
+              {% endif %}
+              <div>
+                <dt class="text-ink3 text-[12px] mono uppercase tracking-wider mb-1">Maker</dt>
+                <dd>
+                  <a href="{{ url_for('company_detail', slug=tool.company.slug) }}" class="text-ink font-medium link-underline">{{ tool.company.name }}</a>
+                </dd>
+              </div>
+              {% if tool.company.hq %}
+              <div>
+                <dt class="text-ink3 text-[12px] mono uppercase tracking-wider mb-1">Based in</dt>
+                <dd class="text-ink2">{{ tool.company.hq }}</dd>
+              </div>
+              {% endif %}
+            </dl>
+            {% if tool.website %}
+              <a href="{{ tool.website }}" target="_blank" rel="noopener" class="btn-primary mt-6 w-full justify-center">
+                Visit {{ tool.name }}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+              </a>
+            {% endif %}
+          </div>
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            {% for c in tool.categories %}
+              <a href="{{ url_for('category_detail', slug=c.slug) }}" class="chip">{{ c.name }}</a>
+            {% endfor %}
+          </div>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="max-w-container mx-auto px-6 lg:px-10 py-16 lg:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-8 space-y-14">
+          {% if tool.description %}
+          <div>
+            <div class="editorial-eyebrow mb-5">What it does</div>
+            <p class="serif-text text-[19px] leading-[1.65] text-ink2 max-w-reading whitespace-pre-line">{{ tool.description }}</p>
+          </div>
+          {% endif %}
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {% if tool.strengths_list() %}
+            <div>
+              <div class="editorial-eyebrow mb-5" style="color: #3E7A5A;">Strengths</div>
+              <ul class="space-y-3.5">
+                {% for s in tool.strengths_list() %}
+                  <li class="flex gap-3 text-ink2 text-[15px] leading-[1.5]">
+                    <span class="text-sage font-bold mt-0.5 flex-shrink-0">+</span>
+                    <span>{{ s }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
+            {% if tool.weaknesses_list() %}
+            <div>
+              <div class="editorial-eyebrow mb-5" style="color: #C84A1E;">Where it falls short</div>
+              <ul class="space-y-3.5">
+                {% for w in tool.weaknesses_list() %}
+                  <li class="flex gap-3 text-ink2 text-[15px] leading-[1.5]">
+                    <span class="text-accent font-bold mt-0.5 flex-shrink-0">−</span>
+                    <span>{{ w }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+          </div>
+
+          {% if tool.best_for_list() %}
+          <div class="border-l-2 border-ink pl-6">
+            <div class="editorial-eyebrow mb-5">Best for</div>
+            <ul class="space-y-3">
+              {% for b in tool.best_for_list() %}
+                <li class="serif-text text-[17px] leading-[1.5] text-ink2">— {{ b }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if related %}
+  <section class="border-t border-line/60">
+    <div class="max-w-container mx-auto px-6 lg:px-10 py-16 lg:py-20">
+      <div class="editorial-eyebrow mb-3">Related</div>
+      <h2 class="serif text-3xl md:text-4xl font-medium tracking-tight mb-10">Tools in the same orbit.</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {% for r in related %}
+          <a href="{{ url_for('tool_detail', slug=r.slug) }}" class="card p-5">
+            <div class="text-[11px] mono text-ink3 mb-1">{{ r.company.name }}</div>
+            <div class="serif text-[18px] font-semibold tracking-tight mb-2">{{ r.name }}</div>
+            <p class="text-[13px] text-ink2 line-clamp-2 leading-[1.5]">{{ r.tagline }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</article>
+{% endblock %}
