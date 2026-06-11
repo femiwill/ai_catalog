@@ -285,7 +285,21 @@ def seed_cmd():
     print("Seed complete")
 
 
-if __name__ == "__main__":
+def _bootstrap():
+    """Create tables and seed if the DB is empty. Runs at import time."""
     with app.app_context():
         db.create_all()
+        from models import Tool
+        if db.session.query(Tool).count() == 0:
+            try:
+                from seed import run_seed
+                run_seed(app, db)
+            except Exception as e:
+                print(f"[bootstrap] seed skipped: {e}")
+
+
+_bootstrap()
+
+
+if __name__ == "__main__":
     app.run(debug=True, port=5050)
