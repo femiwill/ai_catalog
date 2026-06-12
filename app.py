@@ -137,6 +137,36 @@ def about():
     return render_template("about.html")
 
 
+# ---------------- AI Board of Directors ----------------
+
+
+@app.route("/boardroom", methods=["GET", "POST"])
+def boardroom():
+    from boardroom import convene, director_status
+
+    if request.method == "POST":
+        question = (request.form.get("question") or "").strip()
+        if not question:
+            flash("A question is required to convene the board.", "error")
+            return redirect(url_for("boardroom"))
+        meeting = convene(question)
+        return render_template(
+            "boardroom.html",
+            meeting=meeting,
+            directors=meeting["directors"],
+            status=director_status(),
+            question=question,
+        )
+
+    return render_template(
+        "boardroom.html",
+        meeting=None,
+        directors=None,
+        status=director_status(),
+        question="",
+    )
+
+
 # ---------------- Admin ----------------
 
 

@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}The Boardroom — {{ site_name }}{% endblock %}
+{% block description %}Ask your AI Board of Directors. Five perspectives, one chair, one decision.{% endblock %}
+
+{% block content %}
+<style>
+  .director-card {
+    background: #F5EFDD;
+    border: 1px solid #D4C9AA;
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 200ms ease;
+  }
+  .director-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .director-card.strategist::before { background: #1B2940; }
+  .director-card.operator::before { background: #3E6B4D; }
+  .director-card.cfo::before { background: #C58A2E; }
+  .director-card.skeptic::before { background: #D44520; }
+  .director-card.researcher::before { background: #5E4A8C; }
+  .director-card.chair::before { background: linear-gradient(90deg, #1B2940, #3E6B4D, #C58A2E, #D44520, #5E4A8C); height: 4px; }
+
+  .director-avatar {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: #0E0E0C; color: #EDE4CD;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700; font-size: 18px;
+  }
+  .director-avatar.strategist { background: #1B2940; }
+  .director-avatar.operator { background: #3E6B4D; }
+  .director-avatar.cfo { background: #C58A2E; }
+  .director-avatar.skeptic { background: #D44520; }
+  .director-avatar.researcher { background: #5E4A8C; }
+
+  .director-body {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'opsz' 14;
+    font-size: 16.5px;
+    line-height: 1.62;
+    color: #3A3A35;
+    white-space: pre-line;
+  }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(62,107,77,0.12);
+    color: #2A5238;
+  }
+  .status-pill.missing {
+    background: rgba(110,107,96,0.15);
+    color: #6E6B60;
+  }
+  .status-pill.error {
+    background: rgba(212,69,32,0.12);
+    color: #9A2E11;
+  }
+</style>
+
+<!-- ============== HERO ============== -->
+<section class="bg-ink text-cream relative overflow-hidden grain-dark">
+  <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full" style="background: radial-gradient(circle, rgba(212,69,32,0.16) 0%, rgba(212,69,32,0) 70%);"></div>
+  <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(94,74,140,0.15) 0%, rgba(94,74,140,0) 70%);"></div>
+
+  <div class="max-w-container mx-auto px-6 lg:px-10 pt-20 lg:pt-28 pb-16 lg:pb-20 relative z-10">
+    <div class="max-w-4xl">
+      <div class="flex items-center gap-3 mb-10">
+        <span class="pill-stamp"><span class="pulse-dot"></span>The Boardroom · Feature</span>
+      </div>
+      <h1 class="serif font-medium tracking-[-0.04em] text-[56px] md:text-[104px] leading-[0.94] text-cream mb-8" style="font-variation-settings: 'opsz' 144;">
+        Convene your<br>
+        <em class="italic text-accent">AI&nbsp;board</em> of<br>
+        directors.
+      </h1>
+      <p class="serif-text text-[20px] md:text-[22px] leading-[1.5] text-paper2 max-w-3xl">
+        Ask any strategic question. Five frontier models — each playing a distinct role on your board — answer in parallel. The Chair synthesizes. You decide.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== ASK FORM ============== -->
+<section class="border-b border-line/70">
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-16">
+    <form method="post" action="{{ url_for('boardroom') }}" class="max-w-4xl mx-auto">
+      <div class="eyebrow-accent mb-4">Your question to the board</div>
+      <textarea
+        name="question"
+        rows="4"
+        maxlength="2000"
+        required
+        placeholder="e.g. Should we enter the East Africa market with our crypto remittance product? What's the right go-to-market for AI Atlas? Should we raise a seed round now or bootstrap?"
+        class="w-full p-6 text-[18px] leading-[1.5] bg-cream border-2 border-ink rounded-2xl focus:outline-none focus:ring-4 focus:ring-accent/15 transition resize-none serif-text"
+      >{{ question or '' }}</textarea>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-5">
+        <div class="text-[12.5px] text-ink3">
+          The board will deliberate for 10-30 seconds. Each director's response is independent.
+        </div>
+        <button type="submit" class="btn-primary">
+          Convene the board
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============== BOARD ROSTER ============== -->
+<section class="border-b border-line/70 bg-paper2/40">
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-16">
+    <div class="eyebrow mb-3">The roster</div>
+    <h2 class="serif text-4xl md:text-5xl font-medium tracking-[-0.025em] mb-10">Five perspectives. One chair.</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      {% for d in status %}
+        <div class="director-card {{ d.accent }}">
+          <div class="director-avatar {{ d.accent }} mb-4">{{ d.name[4]|upper if d.name|length > 4 else 'B' }}</div>
+          <div class="text-[11px] mono uppercase tracking-wider text-ink3 mb-1">{{ d.role }}</div>
+          <h3 class="serif text-[20px] font-semibold tracking-tight leading-tight mb-2">{{ d.name }}</h3>
+          <p class="text-[13px] text-ink2 leading-[1.5] mb-4">{{ d.title }}</p>
+          {% if d.configured %}
+            <span class="status-pill">● Configured</span>
+          {% else %}
+            <span class="status-pill missing">● Key not set</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="mt-8 text-[13px] text-ink3 max-w-3xl">
+      <strong class="text-ink">Setup:</strong> Set each model's API key as an environment variable. Required keys: <code class="mono text-[12px] bg-paper2 px-2 py-0.5 rounded">ANTHROPIC_API_KEY</code> (Strategist + Chair), <code class="mono text-[12px] bg-paper2 px-2 py-0.5 rounded">OPENAI_API_KEY</code> (Operator), <code class="mono text-[12px] bg-paper2 px-2 py-0.5 rounded">GEMINI_API_KEY</code> (CFO), <code class="mono text-[12px] bg-paper2 px-2 py-0.5 rounded">XAI_API_KEY</code> (Skeptic), <code class="mono text-[12px] bg-paper2 px-2 py-0.5 rounded">PERPLEXITY_API_KEY</code> (Researcher). Unconfigured directors are skipped; the meeting proceeds with whoever's available.
+    </div>
+  </div>
+</section>
+
+<!-- ============== MEETING OUTPUT ============== -->
+{% if meeting %}
+<section class="border-b border-line/70">
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-16">
+    <div class="max-w-4xl mx-auto">
+      <div class="eyebrow-accent mb-4">Minutes of the meeting</div>
+      <h2 class="serif text-3xl md:text-4xl font-medium tracking-[-0.025em] mb-2 italic" style="font-variation-settings: 'opsz' 144;">
+        "{{ meeting.question }}"
+      </h2>
+      <div class="text-[12.5px] mono text-ink3 mb-12">
+        Deliberation: {{ meeting.ms }}ms · {{ meeting.ok_count }}/{{ meeting.total }} directors responded
+      </div>
+
+      <div class="space-y-6">
+        {% for d in directors %}
+          <div class="director-card {{ d.accent }}">
+            <div class="flex items-start gap-4 mb-5">
+              <div class="director-avatar {{ d.accent }} flex-shrink-0">{{ d.name[4]|upper if d.name|length > 4 else 'B' }}</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-[11px] mono uppercase tracking-wider text-ink3 mb-0.5">{{ d.role }} · {{ d.ms }}ms</div>
+                <h3 class="serif text-[24px] font-semibold tracking-tight leading-tight">{{ d.name }}</h3>
+                <p class="text-[13px] text-ink3 italic">{{ d.title }}</p>
+              </div>
+              {% if d.status == 'ok' %}
+                <span class="status-pill">● Responded</span>
+              {% elif d.status == 'not_configured' %}
+                <span class="status-pill missing">● Key not set</span>
+              {% else %}
+                <span class="status-pill error">● Error</span>
+              {% endif %}
+            </div>
+            {% if d.status == 'ok' %}
+              <div class="director-body">{{ d.content }}</div>
+            {% elif d.status == 'not_configured' %}
+              <p class="text-[14px] text-ink3 italic">{{ d.name }} was absent — API key not configured. Set the env var to bring them onto the call.</p>
+            {% else %}
+              <p class="text-[14px] text-accent2">Connection error: {{ d.error or 'unknown' }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        {% if meeting.synthesis and meeting.synthesis.status == 'ok' %}
+          <div class="director-card chair mt-12" style="background: #0E0E0C; color: #F5EFDD; border-color: #0E0E0C;">
+            <div class="flex items-start gap-4 mb-5">
+              <div class="director-avatar flex-shrink-0" style="background: #F5EFDD; color: #0E0E0C;">C</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-[11px] mono uppercase tracking-wider mb-0.5" style="color: #BFB494;">Chair</div>
+                <h3 class="serif text-[28px] font-semibold tracking-tight leading-tight">The Chair</h3>
+                <p class="text-[13px] italic" style="color: #BFB494;">Synthesis & recommendation</p>
+              </div>
+            </div>
+            <div class="director-body" style="color: #E5DBC0; font-size: 17.5px; line-height: 1.7;">{{ meeting.synthesis.content }}</div>
+          </div>
+        {% elif meeting.synthesis and meeting.synthesis.status != 'ok' %}
+          <div class="director-card mt-12" style="background: #1A1916; color: #BFB494; border-color: #2A2924;">
+            <div class="text-[14px]">The Chair could not synthesize: {{ meeting.synthesis.error }}</div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="mt-16 pt-8 border-t border-line text-center">
+        <a href="{{ url_for('boardroom') }}" class="btn-ghost">Convene another meeting</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ============== HOW IT WORKS ============== -->
+{% if not meeting %}
+<section>
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-20">
+    <div class="max-w-3xl">
+      <div class="eyebrow mb-3">How it works</div>
+      <h2 class="serif text-4xl md:text-5xl font-medium tracking-[-0.025em] mb-10">Frontier models, distinct roles.</h2>
+      <div class="space-y-8 serif-text text-[18px] leading-[1.65] text-ink2">
+        <p><strong class="text-ink">Five directors run in parallel.</strong> Each one is a different frontier model, prompted to inhabit a specific board-level role. Claude leads on long-range strategy. GPT-5 runs the operator's brief. Gemini handles capital and unit economics. Grok plays the skeptic — finding what the room is missing. Perplexity grounds the discussion in current data.</p>
+        <p><strong class="text-ink">The Chair synthesizes.</strong> Once the directors have spoken, a final Claude Opus call reads all five responses, identifies where the board agrees and disagrees, and delivers a clear recommendation. No hedging.</p>
+        <p><strong class="text-ink">You stay in control.</strong> You decide which directors are at the table by setting their API keys. Each meeting costs $0.10–0.30 in API fees. No hidden surcharge from us.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

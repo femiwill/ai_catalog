@@ -268,7 +268,7 @@
           <nav class="hidden md:flex items-center gap-9">
             <a href="{{ url_for('categories') }}" class="nav-link">Categories</a>
             <a href="{{ url_for('companies') }}" class="nav-link">Companies</a>
-            <a href="{{ url_for('search') }}" class="nav-link">Search</a>
+            <a href="{{ url_for('boardroom') }}" class="nav-link flex items-center gap-1.5">Boardroom <span class="text-[9px] mono px-1.5 py-0.5 bg-accent text-cream rounded">NEW</span></a>
             <a href="{{ url_for('about') }}" class="nav-link">About</a>
           </nav>
           <form action="{{ url_for('search') }}" method="get" class="hidden lg:flex items-center">
@@ -310,6 +310,7 @@
             <ul class="space-y-2.5 text-[14px]">
               <li><a href="{{ url_for('categories') }}" class="text-paper2 hover:text-accent transition-colors">Categories</a></li>
               <li><a href="{{ url_for('companies') }}" class="text-paper2 hover:text-accent transition-colors">Companies</a></li>
+              <li><a href="{{ url_for('boardroom') }}" class="text-paper2 hover:text-accent transition-colors">The Boardroom</a></li>
               <li><a href="{{ url_for('search') }}" class="text-paper2 hover:text-accent transition-colors">Search</a></li>
             </ul>
           </div>

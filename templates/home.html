@@ -108,6 +108,49 @@
   </div>
 </section>
 
+<!-- ============== BOARDROOM CTA ============== -->
+<section class="bg-ink text-cream relative overflow-hidden grain-dark border-b border-ink/30">
+  <div class="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(212,69,32,0.18) 0%, rgba(212,69,32,0) 70%);"></div>
+  <div class="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(94,74,140,0.15) 0%, rgba(94,74,140,0) 70%);"></div>
+  <div class="max-w-container mx-auto px-6 lg:px-10 py-24 lg:py-32 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div class="lg:col-span-7">
+        <div class="flex items-center gap-3 mb-8">
+          <span class="pill-stamp"><span class="pulse-dot"></span>New · The Boardroom</span>
+        </div>
+        <h2 class="serif text-5xl md:text-7xl font-medium tracking-[-0.03em] leading-[0.98] text-cream mb-8" style="font-variation-settings: 'opsz' 144;">
+          A board of <em class="italic text-accent">AI directors,</em><br>
+          on call.
+        </h2>
+        <p class="serif-text text-[19px] md:text-[22px] leading-[1.5] text-paper2 max-w-2xl mb-10">
+          Ask a strategic question. Five frontier models — Claude, GPT-5, Gemini, Grok, Perplexity — each playing a distinct board role, answer in parallel. The Chair synthesizes. You decide.
+        </p>
+        <a href="{{ url_for('boardroom') }}" class="btn-primary" style="background: #D44520;">
+          Convene the board
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="lg:col-span-5">
+        <div class="grid grid-cols-1 gap-3">
+          {% for role in [('The Strategist','Claude Opus','Long-range positioning','#1B2940'),
+                          ('The Operator','GPT-5','Execution and delivery','#3E6B4D'),
+                          ('The CFO','Gemini Pro','Capital and unit economics','#C58A2E'),
+                          ('The Skeptic','Grok','What we are missing','#D44520'),
+                          ('The Researcher','Perplexity','Evidence and precedent','#5E4A8C')] %}
+            <div class="flex items-center gap-4 p-4 rounded-xl" style="background: rgba(245,239,221,0.05); border: 1px solid rgba(245,239,221,0.1);">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center serif font-bold text-cream text-[15px] flex-shrink-0" style="background: {{ role[3] }};">{{ role[0][4]|upper }}</div>
+              <div class="flex-1 min-w-0">
+                <div class="serif text-[16px] font-semibold text-cream">{{ role[0] }}</div>
+                <div class="text-[12px] text-paper2/70">{{ role[1] }} · {{ role[2] }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============== STATS / MASTHEAD ============== -->
 <section>
   <div class="max-w-container mx-auto px-6 lg:px-10 py-24 lg:py-32">
