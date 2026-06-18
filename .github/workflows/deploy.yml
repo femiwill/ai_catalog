@@ -1,0 +1,58 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: railway-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy AI Atlas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          # Railway install script uses bash-only syntax; pipe to bash so
+          # the POSIX shell doesn't choke on parameter expansion.
+          curl -fsSL https://railway.com/install.sh | bash || true
+          echo "$HOME/.railway/bin" >> "$GITHUB_PATH"
+          if [ -x "$HOME/.railway/bin/railway" ]; then
+            "$HOME/.railway/bin/railway" --version
+          else
+            echo "::error::Railway CLI binary not found after install"
+            exit 1
+          fi
+
+      - name: Deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_AI_ATLAS }}
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN_AI_ATLAS }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "::error::Missing GitHub secret RAILWAY_TOKEN_AI_ATLAS."
+            exit 1
+          fi
+          railway up --service ai-atlas \
+                     --environment production \
+                     --detach
+          echo "✓ Deploy submitted for AI Atlas"
+
+      - name: Wait for health
+        run: |
+          URL="https://ai-atlas-production.up.railway.app"
+          for i in $(seq 1 24); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/" || echo "000")
+            echo "[$i/24] $URL → HTTP $CODE"
+            if [ "$CODE" = "200" ]; then
+              echo "✓ AI Atlas is responding"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::warning::AI Atlas did not return 200 within 4 minutes — check Railway logs"
